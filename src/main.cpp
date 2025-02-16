@@ -4,13 +4,15 @@
 #include <ctime>
 #include <cstring>
 
-std::string checkWord(std::string const& trial, std::string word);
+std::string checkWord(std::string const& trial, std::string word, std::string &indice);
 std::string menuOptions(std::string const& arg, std::string const& word);
 
 int main(int argc, char *argv[])
 {
     srand(time(NULL));
     std::vector<std::string> words = getWords();
+    std::string letters;
+    for (char i = 0; i < 26; i++) letters.push_back(i + 'a');
     std::string word = words[rand() % words.size()];
     std::string trial;
     const unsigned short maxTrial = 5;
@@ -49,15 +51,16 @@ int main(int argc, char *argv[])
                 continue;
             }
 
-            std::string indice = checkWord(trial, word);
+            std::string indice = checkWord(trial, word, letters);
             
             std::cout << "Ce n'est pas le bon mot, réessayez. (" << indice << ")" << std::endl;
+
+            std::cout << letters << std::endl;
         }
         else
         {
             std::cout << "Perdu ! Le mot était " << word << std::endl;
         }
-        
         
         actualTrial++;
     } while (actualTrial < maxTrial);
@@ -65,7 +68,7 @@ int main(int argc, char *argv[])
     return EXIT_SUCCESS;
 }
 
-std::string checkWord(std::string const& trial, std::string word)
+std::string checkWord(std::string const& trial, std::string word, std::string &letters)
 {
     std::string result(5, '-');
 
@@ -85,6 +88,10 @@ std::string checkWord(std::string const& trial, std::string word)
         else
         {
             result[i] = '-';
+            if (letters.find(trial[i]) != std::string::npos)
+            {
+                letters[letters.find(trial[i])] = '-';
+            }
         }
 
     }
